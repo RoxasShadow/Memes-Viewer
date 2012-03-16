@@ -34,3 +34,5 @@ C:\Users\Giovanni\Desktop\Memes Viewer\Memes Viewer\Memes Viewer\obj\x86\Release
 C:\Users\Giovanni\Desktop\Memes Viewer\Memes Viewer\Memes Viewer\obj\x86\Release\GenerateResource.write.1.tlog
 C:\Users\Giovanni\Desktop\Memes Viewer\Memes Viewer\Memes Viewer\obj\x86\Release\Memes Viewer.exe.manifest
 C:\Users\Giovanni\Desktop\Memes Viewer\Memes Viewer\Memes Viewer\obj\x86\Release\Memes Viewer.application
+C:\Users\Giovanni\Desktop\Memes Viewer\Memes Viewer\Memes Viewer\bin\Release\Twitterizer2.dll
+C:\Users\Giovanni\Desktop\Memes Viewer\Memes Viewer\Memes Viewer\bin\Release\Newtonsoft.Json.dll

@@ -26,18 +26,21 @@ using System.Text.RegularExpressions;
 namespace Memes_Viewer {
     public partial class Form1 : Form {
         private List<Meme> memes;
+        private string fb_token, tw_token;
         private int i, panelWidth, panelHeight;
         private string version, url, pattern;
 
         public Form1() {
             InitializeComponent();
-            version = "0.9";
+            version = "0.9.1";
             panelWidth = panel1.Width;
             panelHeight = panel1.Height;
             memes = new List<Meme>();
             url = "http://9gag.com/random";
             pattern = @"<img.*?src=""(?<url>.*?)"".*?alt=""(?<alt>.*?)"".*?>";
             i = 0;
+            fb_token = "fb_token";
+            tw_token = "tw_token";
         }
 
         public Meme GetMeme() {
@@ -136,24 +139,64 @@ namespace Memes_Viewer {
         /* Facebook */
         private void toolStripButton1_Click(object sender, EventArgs e) {
             string token;
-            if(!File.Exists("fb_token") || File.ReadAllText("fb_token").Length < 10) {
+            if(!File.Exists(fb_token) || File.ReadAllText(fb_token).Length < 10) {
                 System.Diagnostics.Process.Start(Facebook.url("179745182062082"));
                 token = Microsoft.VisualBasic.Interaction.InputBox("Paste the current URL when you see \"Success\" in the just opened page.");
-                if(token == "")
+                if(token.Length < 10)
                     return;
                 string[] url = Regex.Split(token, "#access_token=");
                 token = url[1];
                 url = Regex.Split(token, "&expires_in");
                 token = url[0];
-                StreamWriter writer = new StreamWriter("fb_token");
+                StreamWriter writer = new StreamWriter(fb_token);
                 writer.Write(token);
                 writer.Close();
             }
             else
-                token = File.ReadAllText("fb_token");
+                token = File.ReadAllText(fb_token);
             if(pictureBox1.Image != null) {
                 string text = Microsoft.VisualBasic.Interaction.InputBox("Comment for your Facebook post [optional]");
                 new Facebook(token).post(memes[i].url, memes[i].description, text + " @ By Memes Viewer");
+                SetStatus("Shared with Facebook.");
+            }
+            else
+                MessageBox.Show("No memes available.");
+        }
+
+        /* Twitter */
+        private void toolStripButton8_Click(object sender, EventArgs e) {
+            string[] token = new string[4];
+            if(!File.Exists(tw_token) || File.ReadAllText(tw_token).Length < 10) {
+                MessageBox.Show("Create a Twitter app (https://dev.twitter.com/apps) with read/write permissions and compile the following forms.");
+                token[0] = Microsoft.VisualBasic.Interaction.InputBox("Consumer key");
+                token[1] = Microsoft.VisualBasic.Interaction.InputBox("Consumer secret");
+                token[2] = Microsoft.VisualBasic.Interaction.InputBox("Access token");
+                token[3] = Microsoft.VisualBasic.Interaction.InputBox("Access token secret");
+                for(int i=0; i<4; ++i)
+                    if(token[i].ToString().Length < 10)
+                        return;
+                StreamWriter writer = new StreamWriter(tw_token);
+                writer.Write("");
+                for(int i=0; i<4; ++i)
+                    writer.WriteLine(token[i]);
+                writer.Close();
+            }
+            else {
+                StreamReader file = new StreamReader(tw_token);
+                int i = 0;
+                string line;
+                while((line = file.ReadLine()) != null) {
+                    token[i] = line;
+                    ++i;
+                }
+                file.Close();
+            }
+            if(pictureBox1.Image != null) {
+                string credit = "#MemesViewer";
+                string url = Utils.ShortUrl(memes[this.i].url);
+                string text = Utils.Cut(memes[this.i].description, 140 - credit.Length - url.Length - 5); // Max tweet - credit - short url - spacer
+                new Twitter(token).post(text + " >> " + url + " " + credit);
+                SetStatus("Shared with Twitter.");
             }
             else
                 MessageBox.Show("No memes available.");

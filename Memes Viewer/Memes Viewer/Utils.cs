@@ -16,6 +16,7 @@
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.IO;
 
 namespace Memes_Viewer {
     class Utils {
@@ -39,6 +40,17 @@ namespace Memes_Viewer {
 
         public static string HtmlDecode(string content) {
             return WebUtility.HtmlDecode(content);
+        }
+
+        public static string Cut(string text, int n) {
+            return text.Length > n ? text.Remove(n) : text;
+        }
+
+        public static string ShortUrl(string url) {
+            WebRequest request = WebRequest.Create("http://tinyurl.com/api-create.php?url=" + url);
+            Stream stream = request.GetResponse().GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+            return reader.ReadLine();
         }
     }
 }
