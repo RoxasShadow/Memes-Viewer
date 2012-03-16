@@ -32,7 +32,7 @@ namespace Memes_Viewer {
 
         public Form1() {
             InitializeComponent();
-            version = "0.9.1";
+            version = "0.9.2";
             panelWidth = panel1.Width;
             panelHeight = panel1.Height;
             memes = new List<Meme>();
